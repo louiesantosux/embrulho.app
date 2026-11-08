@@ -302,6 +302,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 /* ---------- top bar ---------- */
 .topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;max-width:1440px;margin:0 auto 14px;padding-top:2px}
 .topbar-inner{display:flex;align-items:center;gap:14px;height:64px;padding:0 10px 0 12px;border-radius:999px}
+.tb-brand{padding:4px 12px 4px 0;border-radius:999px;color:inherit;transition:opacity .2s}
+.tb-brand:hover{opacity:.8}
+.tb-brand:active .mark{transform:scale(.94)}
+.tb-brand .mark{transition:transform .15s}
 .tb-brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:500;font-size:19px;letter-spacing:-.01em;white-space:nowrap}
 .tb-brand .mark{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--lime);color:var(--lime-ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
 .tb-nav{display:flex;gap:4px;margin-left:12px;padding:4px;border-radius:999px;background:var(--panel);border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 var(--glass-hi)}
@@ -386,6 +390,28 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 }
 
 
+.lstrip{display:flex;flex-direction:column;gap:12px}
+.lstrip-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.lstrip-h h2{font-size:22px}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.ltile{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:14px 16px 16px;border-radius:var(--r-md);min-width:0;
+  background:linear-gradient(180deg,var(--sheen),transparent 45%),var(--surface);border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 var(--glass-hi),0 14px 30px -24px var(--glass-shadow);
+  -webkit-backdrop-filter:blur(26px) saturate(175%);backdrop-filter:blur(26px) saturate(175%);transition:transform .2s,box-shadow .2s}
+.ltile:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 var(--glass-hi),0 22px 40px -24px var(--glass-shadow)}
+.ltile b{font-weight:500;font-size:16px;line-height:1.25;overflow-wrap:anywhere;margin-top:4px}
+.ltile .sub{font-size:12.5px;color:var(--ink-3)}
+.ltile .peek{font-size:12.5px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.ltile.new{background:transparent;border:1.5px dashed var(--line-2);box-shadow:none}
+.ltile.new .list-ic{background:var(--lime);color:var(--lime-ink)}
+.list-ic{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:var(--lime-soft);color:var(--ink);flex:none}
+.list-ic.lg{width:60px;height:60px;border-radius:18px}
+.head-actions{display:flex;gap:10px;flex-wrap:wrap}
+.card .det .lst{display:inline-flex;align-items:center;gap:5px;background:var(--lime-soft);border-color:transparent;color:var(--ink)}
+.pick.dashed{background:transparent;border:1.5px dashed var(--line-2);box-shadow:none}
+.pick.iconpick{width:42px;justify-content:center;padding:0}
+.danger-txt{color:var(--heart)}
+.danger-txt.confirm{background:var(--heart);color:var(--lime-ink)}
+.nav .ell{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* ---------- auth ---------- */
 .btn.google{height:50px;justify-content:center;background:var(--raised);border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 var(--glass-hi),0 8px 20px -14px var(--glass-shadow);color:var(--ink);gap:10px}
 .or{display:flex;align-items:center;gap:12px;color:var(--ink-3);font-size:12.5px}
@@ -427,6 +453,90 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   .rail{border-radius:999px}
 }
 @media (max-width:360px){ .tb-brand span{display:none} }
+
+/* ---------- motion: iOS 26 ---------- */
+:root{--spring:cubic-bezier(.34,1.56,.64,1);--spring-soft:cubic-bezier(.22,1.2,.36,1);--ease-out:cubic-bezier(.2,.8,.2,1)}
+@supports (transition-timing-function:linear(0,1)){:root{
+  --spring:linear(0,.009,.035 2.1%,.141 4.4%,.723 12.9%,.938 16.7%,1.017 19.4%,1.067,1.099 24.3%,1.108 26%,1.103,1.085 30.2%,1.035 37.2%,1.008 42.4%,.993 47.4%,.99 53.6%,1.001 72.4%,1);
+  --spring-soft:linear(0,.02,.08 3.5%,.38 10%,.7 17%,.88 24%,.97 31%,1.01 38%,1.02 45%,1.005 62%,1)}}
+html{scroll-behavior:smooth}
+body,.ambient i{transition:background-color .5s var(--ease-out)}
+
+/* screen transitions */
+.v-enter{animation:v-in .62s var(--spring-soft) both;animation-delay:var(--t,0ms)}
+@keyframes v-in{from{opacity:0;transform:translateX(var(--dx,24px)) scale(.985);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+.v-enter .grid>*,.v-enter .friend-grid>*,.v-enter .lgrid>*,.v-enter .stats>*{animation:rise .6s var(--spring-soft) both;animation-delay:calc(var(--t,0ms) + 80ms + var(--i,0) * 38ms)}
+@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
+.login.v-enter .box{animation:rise .7s var(--spring-soft) both;animation-delay:calc(var(--t,0ms) + 120ms)}
+
+/* press: shrink + spring back, light under the finger */
+.btn,.pill,.pick,.ltile,.tb-nav button,.rail-btn,.seg button,.fcard,.icon-btn,.tb-brand,.stepper button,.menu button,.suggest,.nav button,.person .btn,.card{
+  transition:transform .55s var(--spring),background-color .3s,color .3s,box-shadow .35s,opacity .2s,filter .2s,border-color .3s}
+.btn:active,.pill:active,.pick:active,.tb-nav button:active,.rail-btn:active,.seg button:active,.icon-btn:active,.stepper button:active,.menu button:active,.suggest:active,.nav button:active{transform:scale(.93);transition-duration:.14s}
+.ltile:active,.fcard:active{transform:scale(.97);transition-duration:.14s}
+.tb-brand:active{transform:scale(.95);transition-duration:.14s}
+.btn,.pill,.pick,.ltile,.tb-nav button,.rail-btn,.seg button,.fcard,.icon-btn{position:relative;isolation:isolate}
+.btn,.pill,.pick,.ltile,.fcard,.icon-btn,.rail-btn{overflow:hidden}
+:is(.btn,.pill,.pick,.ltile,.tb-nav button,.rail-btn,.seg button,.fcard,.icon-btn)::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.55),rgba(255,255,255,.12) 38%,transparent 70%);opacity:0;transform:scale(.6);transition:opacity .5s var(--ease-out),transform .6s var(--spring-soft)}
+:is(.btn,.pill,.pick,.ltile,.tb-nav button,.rail-btn,.seg button,.fcard,.icon-btn).pressing::after{opacity:1;transform:scale(1.15);transition-duration:.12s,.35s}
+.btn.primary.pressing,.rail-btn.add.pressing{filter:brightness(1.12)}
+
+/* sliding glass lens in tab bars and segmented controls */
+.has-lens{position:relative}
+.has-lens>button{position:relative;z-index:1}
+.has-lens>[aria-current="page"],.has-lens>[aria-pressed="true"]{background:transparent!important;box-shadow:none!important}
+.lens{position:absolute;z-index:0;pointer-events:none;background:var(--raised);
+  box-shadow:inset 0 1px 0 var(--glass-hi),inset 0 -1px 0 var(--glass-lo),0 8px 20px -10px var(--glass-shadow);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+  transition:left .55s var(--spring),top .55s var(--spring),width .55s var(--spring),height .55s var(--spring),transform .3s var(--spring)}
+.lens.moving{transform:scale(1.08,1.12);background:linear-gradient(180deg,rgba(255,255,255,.35),transparent),var(--raised)}
+
+/* switch knob stretches while pressed */
+.mode .knob{transition:left .45s var(--spring),box-shadow .45s,color .45s,transform .35s var(--spring)}
+.mode:active .knob{transform:scaleX(1.22)}
+.mode:not([aria-checked="true"]) .knob{transform-origin:right center}
+.mode[aria-checked="true"] .knob{transform-origin:left center}
+
+/* hearts pop */
+.hearts button.pop,.bighearts button.pop{animation:pop .55s var(--spring) both;animation-delay:calc(var(--t,0ms) + var(--i,0) * 45ms)}
+@keyframes pop{0%{transform:scale(1)}35%{transform:scale(1.38)}100%{transform:scale(1)}}
+
+/* sheet presentation */
+.overlay.opening{animation:ov-in .35s var(--ease-out) both}
+.overlay.opening .dialog{animation:sheet-in .62s var(--spring-soft) both}
+.overlay.closing{animation:ov-out .23s ease-in both}
+.overlay.closing .dialog{animation:sheet-out .23s ease-in both}
+@keyframes ov-in{from{background-color:transparent;-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}}
+@keyframes ov-out{to{background-color:transparent;-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}}
+@keyframes sheet-in{from{opacity:0;transform:translateY(34px) scale(.93);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+@keyframes sheet-out{to{opacity:0;transform:translateY(20px) scale(.96);filter:blur(6px)}}
+@media (max-width:720px){
+  @keyframes sheet-in{from{opacity:.4;transform:translateY(70vh)}to{opacity:1;transform:none}}
+  @keyframes sheet-out{to{opacity:.4;transform:translateY(60vh)}}
+}
+
+/* toast drops in like a notification */
+.toast:not([hidden]){animation:toast-in .6s var(--spring) both}
+@keyframes toast-in{from{opacity:0;transform:translateX(-50%) translateY(24px) scale(.85);filter:blur(6px)}to{opacity:1;transform:translateX(-50%);filter:none}}
+
+/* top bar condenses on scroll */
+.topbar-inner{transition:height .5s var(--spring),padding .5s var(--spring),background-color .35s,box-shadow .35s,border-color .35s}
+.tb-brand .mark{transition:width .5s var(--spring),height .5s var(--spring),transform .4s var(--spring)}
+html.scrolled .topbar-inner{height:54px;box-shadow:inset 0 1px 0 var(--glass-hi),inset 0 -1px 0 var(--glass-lo),0 18px 40px -20px var(--glass-shadow)}
+html.scrolled .tb-brand .mark{width:34px;height:34px}
+html.scrolled .tb-nav button{height:34px}
+.tb-nav button{transition:transform .55s var(--spring),height .5s var(--spring),color .3s}
+
+/* cards and tiles lift with spring */
+.card:hover,.fcard:hover,.ltile:hover{transition-duration:.5s}
+.chip,.pick[aria-pressed="true"]{transition:background-color .3s,color .3s,transform .5s var(--spring)}
+
+@media (prefers-reduced-motion:reduce){
+  .v-enter,.v-enter *,.overlay.opening,.overlay.opening .dialog,.toast:not([hidden]),.pop{animation:none!important}
+  .lens{transition:none}
+}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -476,6 +586,11 @@ const ICONS = {
   back:'<path d="M15 6l-6 6 6 6"/>',
   search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
   spark:'<path d="M12 2v6M12 16v6M2 12h6M16 12h6M5 5l3.5 3.5M15.5 15.5L19 19M19 5l-3.5 3.5M8.5 15.5L5 19"/>',
+  watch:'<circle cx="12" cy="12" r="6"/><path d="M12 9.5V12l1.6 1.2M9 6.5L9.6 2.5h4.8L15 6.5M9 17.5l.6 4h4.8l.6-4"/>',
+  plane:'<path d="M10.5 13.5L3 11l1.5-1.5 7.5 1 4.5-5c1-1 2.6-1.3 3.2-.7.6.6.3 2.2-.7 3.2l-5 4.5 1 7.5L13.5 21 11 13.5"/>',
+  heartline:'<path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 8 3.3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.5 0 5.4 3.5 4.1 6.8-1.8 4.6-9.3 9.2-9.3 9.2z"/>',
+  folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
   cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>'
 };
 const HEART = '<path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 8 3.3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.5 0 5.4 3.5 4.1 6.8-1.8 4.6-9.3 9.2-9.3 9.2z"/>';
@@ -494,6 +609,7 @@ const RANGES = [
   {id:'r4',label:'R$ 500–1.500',min:500,max:1500},
   {id:'r5',label:'Acima de R$ 1.500',min:1500,max:Infinity}
 ];
+const LIST_ICONS=['folder','watch','tecnologia','moda','casa','beleza','livros','plane','games','esportes','heartline','star','outros'];
 const LEVELS = ['','Seria legal','Gosto bastante','Quero','Quero muito','É um sonho'];
 const nthSunday = (y,m,n) => { const d=new Date(y,m,1); const first=(7-d.getDay())%7; return new Date(y,m,1+first+7*(n-1)); };
 const OCCASIONS = [
@@ -563,8 +679,9 @@ const S = {
   friends:[], directory:[], profiles:{},
   friendItems:{}, friendProfile:{},
   view:'lista', openFriend:null,
-  f:{cat:'all',range:'all',sort:'hearts',status:'ativos'},
-  ff:{cat:'all',range:'all',sort:'hearts'},
+  f:{cat:'all',range:'all',sort:'hearts',status:'ativos',list:'all'},
+  ff:{cat:'all',range:'all',sort:'hearts',list:'all'},
+  myLists:[], friendLists:{}, listDraft:null,
   menuOpen:null, confirmDel:null,
   stale:false, searchHits:[], searchQ:'',
   authMode:'entrar', authBusy:false, authErr:'', authInfo:'', authEmail:'', authName:'', pendingName:'', invitedBy:null
@@ -585,6 +702,8 @@ const API = {
   async patchItem(id,patch){ await updateDoc(doc(db,'wishlists',S.me.id,'items',id), clean(patch)); },
   async deleteItem(id){ await deleteDoc(doc(db,'wishlists',S.me.id,'items',id)); },
   async saveProfile(p){ await setDoc(doc(db,'wishlists',S.me.id), clean({...p,updatedAt:Date.now()}), {merge:true}); },
+  async saveList(l){ const {id,...body}=l; await setDoc(doc(db,'wishlists',S.me.id,'lists',id), clean(body)); },
+  async deleteList(id){ await deleteDoc(doc(db,'wishlists',S.me.id,'lists',id)); },
   async setFriends(arr){ await setDoc(doc(db,'private',S.me.id), {friends:arr}, {merge:true}); }
 };
 function newId(){ return 'w'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
@@ -626,6 +745,7 @@ async function startSession(u){
     if(snap.exists()){ const d=snap.data(); S.myProfile={birthday:'',...d}; if(d.name) S.me.name=d.name; if(d.photoURL&&!S.me.avatarUrl) S.me.avatarUrl=d.photoURL; }
     render();
   }, e=>console.error(e));
+  subs.lists=onSnapshot(collection(db,'wishlists',u.uid,'lists'), snap=>{ S.myLists=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0)); if(S.f.list!=='all'&&!S.myLists.some(l=>l.id===S.f.list)) S.f.list='all'; render(); }, e=>console.error(e));
   subs.social=onSnapshot(doc(db,'private',u.uid), snap=>{
     S.friends=(snap.exists()&&Array.isArray(snap.data().friends))?snap.data().friends:[];
     syncWatched(); render();
@@ -633,8 +753,8 @@ async function startSession(u){
 }
 function endSession(){
   Object.values(subs).forEach(f=>{ try{f();}catch(e){} }); Object.keys(subs).forEach(k=>delete subs[k]);
-  Object.values(watched).forEach(w=>{ w.a(); w.b(); }); Object.keys(watched).forEach(k=>delete watched[k]);
-  Object.assign(S,{loggedIn:false,me:{id:null,name:'',avatarUrl:''},myItems:[],myProfile:{birthday:''},myLoaded:false,friends:[],profiles:{},friendItems:{},friendProfile:{},view:'lista',openFriend:null,searchHits:[],searchQ:'',stale:false});
+  Object.values(watched).forEach(w=>{ w.a(); w.b(); w.c(); }); Object.keys(watched).forEach(k=>delete watched[k]);
+  Object.assign(S,{loggedIn:false,me:{id:null,name:'',avatarUrl:''},myItems:[],myLists:[],friendLists:{},listDraft:null,f:{cat:'all',range:'all',sort:'hearts',status:'ativos',list:'all'},myProfile:{birthday:''},myLoaded:false,friends:[],profiles:{},friendItems:{},friendProfile:{},view:'lista',openFriend:null,searchHits:[],searchQ:'',stale:false});
 }
 
 /* people we follow (and an invite we are looking at) get live subscriptions */
@@ -645,10 +765,11 @@ function syncWatched(){
     if(watched[fid]) return;
     watched[fid]={
       a:onSnapshot(collection(db,'wishlists',fid,'items'), snap=>{ S.friendItems[fid]=snap.docs.map(d=>({id:d.id,...d.data()})); render(); }, ()=>{ S.friendItems[fid]=S.friendItems[fid]||[]; render(); }),
+      c:onSnapshot(collection(db,'wishlists',fid,'lists'), snap=>{ S.friendLists[fid]=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0)); render(); }, ()=>{ S.friendLists[fid]=[]; }),
       b:onSnapshot(doc(db,'wishlists',fid), snap=>{ if(snap.exists()){ const d=snap.data(); S.profiles[fid]=profileFromDoc(d); S.friendProfile[fid]={birthday:d.birthday||''}; } else { S.profiles[fid]=S.profiles[fid]||{name:'',missing:true}; } render(); }, ()=>{})
     };
   });
-  Object.keys(watched).forEach(fid=>{ if(!want.has(fid)){ watched[fid].a(); watched[fid].b(); delete watched[fid]; } });
+  Object.keys(watched).forEach(fid=>{ if(!want.has(fid)){ watched[fid].a(); watched[fid].b(); watched[fid].c(); delete watched[fid]; } });
 }
 
 /* search by name prefix, or exact e-mail */
@@ -715,6 +836,7 @@ function filterItems(items, f, bday, mine){
   let out=items.slice();
   if(mine){ if(f.status==='ativos') out=out.filter(i=>!i.got); else if(f.status==='ganhos') out=out.filter(i=>i.got); else if(f.status==='sonhos') out=out.filter(i=>!i.got&&i.hearts>=5); }
   else out=out.filter(i=>!i.got);
+  if(f.list&&f.list!=='all') out=out.filter(i=>(i.listIds||[]).includes(f.list));
   if(f.cat!=='all') out=out.filter(i=>i.category===f.cat);
   if(f.range!=='all') out=out.filter(i=>(i.range||rangeFor(i.price))===f.range);
   const occDays=i=>bestOccasion(i,bday)?.days ?? 9999;
@@ -746,7 +868,7 @@ function renderTopbar(inApp){
   const night=currentTheme()==='dark';
   const tab=(v,label,icon)=>`<button data-act="go" data-v="${v}" ${S.view===v?'aria-current="page"':''}>${ic(icon,17)}${label}</button>`;
   return `<header class="topbar"><div class="topbar-inner">
-    <div class="tb-brand"><span class="mark">${heartSvg(20)}</span><span>Desejário</span></div>
+    <button type="button" class="tb-brand" data-act="home" aria-label="Desejário, ir para o início"><span class="mark">${heartSvg(20)}</span><span>Desejário</span></button>
     ${inApp?`<nav class="tb-nav" aria-label="Seções">${tab('lista','Minha lista','list')}${tab('amigos','Amigos','friends')}${tab('perfil','Perfil','user')}</nav>`:''}
     <div class="tb-spacer"></div>
     ${inApp?`<button class="btn primary tb-add" data-act="new" ${S.canWrite?'':'disabled'} aria-label="Adicionar desejo">${ic('plus',18,2.2)}<span>Adicionar desejo</span></button>`:''}
@@ -759,11 +881,57 @@ function renderTopbar(inApp){
 }
 
 /* ================= render ================= */
+/* ================= motion (iOS 26 style) ================= */
+const MOTION={vk:null,at:0,dir:1,lens:{}};
+const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function viewKey(inApp){ if(!inApp) return 'login'; return S.view==='amigos' ? (S.openFriend?'amigo:'+S.openFriend:'amigos') : S.view==='perfil' ? 'perfil' : (S.f.list!=='all'?'lista:'+S.f.list:'lista'); }
+function viewRank(k){ if(!k) return 0; if(k==='login') return -1; if(k==='lista') return 0; if(k.startsWith('lista:')) return 1; if(k==='amigos') return 2; if(k.startsWith('amigo:')) return 3; if(k==='perfil') return 4; return 0; }
+function afterRender(){
+  const el=performance.now()-MOTION.at;
+  if(el<720 && !reduceMotion()){
+    document.querySelectorAll('#main, .login').forEach(n=>{ n.classList.add('v-enter'); n.style.setProperty('--t',`-${Math.round(el)}ms`); n.style.setProperty('--dx', MOTION.dir>0?'28px':'-28px'); });
+    document.querySelectorAll('#main .grid, #main .friend-grid, #main .lgrid, #main .stats').forEach(g=>[...g.children].forEach((c,i)=>c.style.setProperty('--i',Math.min(i,10))));
+  }
+  updateLenses();
+}
+function updateLenses(){
+  document.querySelectorAll('.tb-nav, .rail, .seg').forEach(c=>{
+    const key=c.classList[0]+':'+(c.getAttribute('aria-label')||'');
+    const act=c.querySelector(':scope > [aria-current="page"], :scope > [aria-pressed="true"]');
+    if(!act){ delete MOTION.lens[key]; return; }
+    c.classList.add('has-lens');
+    const lens=document.createElement('span'); lens.className='lens'; lens.setAttribute('aria-hidden','true');
+    const r={l:act.offsetLeft,t:act.offsetTop,w:act.offsetWidth,h:act.offsetHeight};
+    const prev=MOTION.lens[key]; MOTION.lens[key]=r;
+    const put=v=>{ lens.style.left=v.l+'px'; lens.style.top=v.t+'px'; lens.style.width=v.w+'px'; lens.style.height=v.h+'px'; };
+    lens.style.borderRadius=getComputedStyle(act).borderRadius;
+    c.prepend(lens);
+    if(prev && (prev.l!==r.l||prev.t!==r.t||prev.w!==r.w) && !reduceMotion()){
+      put(prev); lens.classList.add('moving'); lens.getBoundingClientRect();
+      requestAnimationFrame(()=>{ put(r); setTimeout(()=>lens.classList.remove('moving'),260); });
+    } else put(r);
+  });
+}
+/* finger glow + modal presentation */
+const GLOW_SEL='.btn,.pill,.pick,.ltile,.tb-nav button,.rail-btn,.seg button,.fcard,.icon-btn';
+document.addEventListener('pointerdown',e=>{ const b=e.target.closest(GLOW_SEL); if(!b) return; const r=b.getBoundingClientRect(); b.style.setProperty('--mx',(e.clientX-r.left)+'px'); b.style.setProperty('--my',(e.clientY-r.top)+'px'); b.classList.add('pressing'); },{passive:true});
+['pointerup','pointercancel','pointerleave'].forEach(t=>document.addEventListener(t,()=>document.querySelectorAll('.pressing').forEach(b=>b.classList.remove('pressing')),{passive:true,capture:true}));
+let modalT=0, openT=0;
+function showModal(){ const m=document.getElementById('modal'); clearTimeout(modalT); clearTimeout(openT); m.classList.remove('closing'); m.hidden=false; m.classList.add('opening'); openT=setTimeout(()=>m.classList.remove('opening'),650); document.body.style.overflow='hidden'; }
+function hideModal(){ const m=document.getElementById('modal'); clearTimeout(openT); m.classList.remove('opening'); document.body.style.overflow='';
+  if(reduceMotion()){ m.hidden=true; m.innerHTML=''; return; }
+  m.classList.add('closing'); modalT=setTimeout(()=>{ m.hidden=true; m.innerHTML=''; m.classList.remove('closing'); },230); }
+window.addEventListener('scroll',()=>document.documentElement.classList.toggle('scrolled',window.scrollY>12),{passive:true});
+window.addEventListener('resize',()=>{ clearTimeout(window.__lr); window.__lr=setTimeout(updateLenses,120); });
+
 function render(){
   const app=document.getElementById('app');
   const ae=document.activeElement; const keep = ae && ae.id ? {id:ae.id, v:ae.value, s:ae.selectionStart, e:ae.selectionEnd} : null;
   const inApp = S.phase==='ready' && S.loggedIn;
+  const vk = viewKey(inApp);
+  if(vk!==MOTION.vk){ MOTION.dir = viewRank(vk) >= viewRank(MOTION.vk||vk) ? 1 : -1; MOTION.vk=vk; MOTION.at=performance.now(); }
   app.innerHTML = renderTopbar(inApp) + (inApp ? renderShell() : renderLogin());
+  afterRender();
   if(keep){ const el=document.getElementById(keep.id); if(el){ if('value' in el && keep.v!=null && el.tagName==='INPUT') el.value=keep.v; el.focus(); try{ if(keep.s!=null) el.setSelectionRange(keep.s,keep.e);}catch(e){} } }
 }
 
@@ -833,6 +1001,11 @@ function renderShell(){
         ${sideStatus('ganhos','Já ganhei','check',sum.got)}
       </div></div>
       <hr>
+      <div><h4>Minhas listas</h4><div class="nav">
+        ${S.myLists.map(l=>`<button data-act="openlist" data-v="${esc(l.id)}" aria-pressed="${S.view==='lista'&&S.f.list===l.id}"><span class="ic">${ic(l.icon||'folder',19)}</span><span class="ell">${esc(l.name)}</span><span class="ct num">${S.myItems.filter(i=>!i.got&&(i.listIds||[]).includes(l.id)).length}</span></button>`).join('')}
+        <button data-act="newlist"><span class="ic">${ic('plus',19)}</span>Nova lista</button>
+      </div></div>
+      <hr>
       <div><h4>Categorias</h4><div class="nav">
         ${CATS.filter(c=>catCounts[c.id]).map(c=>`<button data-act="sidecat" data-v="${c.id}" aria-pressed="${S.view==='lista'&&S.f.cat===c.id}"><span class="ic">${ic(c.id,19)}</span>${c.label}<span class="ct num">${catCounts[c.id]}</span></button>`).join('') || '<p class="hint" style="padding:0 10px">Suas categorias aparecem aqui.</p>'}
       </div></div>
@@ -881,9 +1054,9 @@ function filterBlock(f, items, scope){
 }
 
 function heartsRow(item, editable){
-  const h=item.hearts||0;
+  const h=item.hearts||0; const pop=S.pop&&S.pop.id===item.id&&performance.now()-S.pop.at<600?S.pop:null;
   return `<div class="hearts" role="group" aria-label="Quanto quer: ${h} de 5">
-    ${[1,2,3,4,5].map(n=>`<button class="${n<=h?'on':''}" ${editable?`data-act="heart" data-id="${esc(item.id)}" data-v="${n}" aria-label="${n} de 5: ${LEVELS[n]}" title="${LEVELS[n]}"`:'disabled tabindex="-1" aria-hidden="true"'}>${heartSvg(20)}</button>`).join('')}
+    ${[1,2,3,4,5].map(n=>`<button class="${n<=h?'on':''} ${pop&&n<=pop.n?'pop':''}" style="${pop&&n<=pop.n?`--t:-${Math.round(performance.now()-pop.at)}ms;--i:${n-1}`:''}" ${editable?`data-act="heart" data-id="${esc(item.id)}" data-v="${n}" aria-label="${n} de 5: ${LEVELS[n]}" title="${LEVELS[n]}"`:'disabled tabindex="-1" aria-hidden="true"'}>${heartSvg(20)}</button>`).join('')}
     <span class="lvl">${LEVELS[h]||''}</span>
   </div>`;
 }
@@ -898,6 +1071,8 @@ function wishCard(item, mine, bday, preview){
   const menuOpen = mine && S.menuOpen===item.id;
   let host=''; try{ if(item.url) host=new URL(item.url).hostname.replace(/^www\./,''); }catch(e){}
   const det=[item.size?`Tamanho ${item.size}`:'',item.color||''].filter(Boolean);
+  const ownerLists = mine||preview ? S.myLists : (S.friendLists[S.openFriend]||[]);
+  const inLists=(item.listIds||[]).map(id=>ownerLists.find(l=>l.id===id)).filter(Boolean);
   return `<article class="card ${item.got?'got':''} ${S.justAdded===item.id?'fresh':''} ${preview?'preview':''}">
     <div class="card-top">
       <span class="cat-ic">${ic(cat.id,20)}</span>
@@ -910,7 +1085,7 @@ function wishCard(item, mine, bday, preview){
       <button class="danger ${S.confirmDel===item.id?'confirm':''}" data-act="del" data-id="${esc(item.id)}">${S.confirmDel===item.id?'Confirmar exclusão':'Excluir'}</button>
     </div>`:''}
     <h3>${esc(item.title)}</h3>
-    ${det.length||item.qty>1?`<div class="det">${det.map(d=>`<span>${esc(d)}</span>`).join('')}${item.qty>1?`<span class="num">× ${item.qty}</span>`:''}</div>`:''}
+    ${det.length||item.qty>1||inLists.length?`<div class="det">${inLists.map(l=>`<span class="lst">${ic(l.icon||'folder',12)}${esc(l.name)}</span>`).join('')}${det.map(d=>`<span>${esc(d)}</span>`).join('')}${item.qty>1?`<span class="num">× ${item.qty}</span>`:''}</div>`:''}
     ${item.note?`<p class="note">${esc(item.note)}</p>`:''}
     ${heartsRow(item, mine && S.canWrite && !item.got)}
     <div class="occ">
@@ -932,15 +1107,81 @@ function renderMine(sum){
   else if(!S.myItems.length) body=`<div class="empty"><h3>Sua lista está vazia</h3><p>Adicione o primeiro desejo: dê um nome, diga quanto você quer de 1 a 5 corações e escolha a ocasião ideal para ganhar.</p><button class="btn primary" data-act="new" ${S.canWrite?'':'disabled'}>${ic('plus',18,2)}Adicionar desejo</button></div>`;
   else if(!items.length) body=`<div class="empty"><h3>Nada com esses filtros</h3><p>Tente outra categoria ou faixa de preço.</p><button class="btn ghost" data-act="clear" data-scope="me">Limpar filtros</button></div>`;
   else body=`<div class="grid">${items.map(i=>wishCard(i,true,S.myProfile.birthday)).join('')}</div>`;
+  const L = S.f.list!=='all' ? S.myLists.find(l=>l.id===S.f.list) : null;
+  if(L){
+    const inL=S.myItems.filter(i=>(i.listIds||[]).includes(L.id));
+    const sumL=summary(inL,S.myProfile.birthday);
+    if(!inL.length) body=`<div class="empty"><h3>Lista vazia</h3><p>Adicione um desejo direto nesta lista, ou abra um desejo que você já tem, clique em Editar e marque “${esc(L.name)}”.</p><button class="btn primary" data-act="new" data-list="${esc(L.id)}">${ic('plus',18,2)}Adicionar nesta lista</button></div>`;
+    return `${banners()}
+    <button class="back" data-act="openlist" data-v="all">${ic('back',18)}Todos os desejos</button>
+    <div class="head"><div style="display:flex;align-items:center;gap:16px;min-width:0"><span class="list-ic lg">${ic(L.icon||'folder',28)}</span><div style="min-width:0"><span class="mono">Lista</span><h1>${esc(L.name)}</h1>${L.desc?`<p>${esc(L.desc)}</p>`:''}</div></div>
+      <div class="head-actions"><button class="btn ghost" data-act="editlist" data-v="${esc(L.id)}">${ic('edit',17)}Editar lista</button><button class="btn primary" data-act="new" data-list="${esc(L.id)}">${ic('plus',18,2)}Adicionar nesta lista</button></div></div>
+    ${statsBlock(sumL,true)}
+    <div class="subrow"><div class="seg" role="group" aria-label="Situação">
+      ${[['ativos','Desejos'],['sonhos','Sonhos'],['ganhos','Já ganhei'],['todos','Tudo']].map(([v,l])=>`<button data-act="status" data-v="${v}" aria-pressed="${S.f.status===v}">${l}</button>`).join('')}
+    </div></div>
+    ${filterBlock(S.f,inL,'me')}
+    ${body}`;
+  }
   return `${banners()}
     <div class="head"><div><h1>${titles[S.f.status]||'Minha lista'}</h1><p>${S.f.status==='ganhos'?'Os presentes que você já recebeu.':'Tudo o que você quer, do sonho ao mimo.'}</p></div>
       <button class="btn primary" data-act="new" ${S.canWrite?'':'disabled'}>${ic('plus',18,2)}Adicionar desejo</button></div>
     ${statsBlock(sum,true)}
+    ${listStrip(S.myLists,S.myItems,true)}
     <div class="subrow"><div class="seg" role="group" aria-label="Situação">
       ${[['ativos','Desejos'],['sonhos','Sonhos'],['ganhos','Já ganhei'],['todos','Tudo']].map(([v,l])=>`<button data-act="status" data-v="${v}" aria-pressed="${S.f.status===v}">${l}</button>`).join('')}
     </div></div>
     ${filterBlock(S.f,S.myItems,'me')}
     ${body}`;
+}
+
+function listStrip(lists, items, mine){
+  if(!mine && !lists.length) return '';
+  const tile=l=>{ const inL=items.filter(i=>!i.got&&(i.listIds||[]).includes(l.id)); const top=inL.slice().sort((a,b)=>(b.hearts||0)-(a.hearts||0)).slice(0,2);
+    return `<button class="ltile" data-act="${mine?'openlist':'flist'}" data-v="${esc(l.id)}"><span class="list-ic">${ic(l.icon||'folder',20)}</span><b>${esc(l.name)}</b><span class="sub num">${inL.length} ${inL.length===1?'desejo':'desejos'}</span>${top.length?`<span class="peek">${top.map(t=>esc(t.title)).join(' · ')}</span>`:''}</button>`; };
+  return `<section class="lstrip" aria-label="Listas"><div class="lstrip-h"><h2>${mine?'Suas listas':'Listas'}</h2>${mine&&lists.length?'<span class="hint">Agrupe desejos por tema</span>':''}</div>
+    <div class="lgrid">${lists.map(tile).join('')}${mine?`<button class="ltile new" data-act="newlist"><span class="list-ic">${ic('plus',20,2)}</span><b>Nova lista</b><span class="sub">${lists.length?'Crie outro grupo':'Ex.: “Relógios que eu quero”'}</span></button>`:''}</div></section>`;
+}
+
+/* ---------- list create / edit ---------- */
+function openListEditor(list){
+  S.listDraft = list ? {...list,_new:false,_err:'',_confirm:false} : {id:'l'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:'',desc:'',icon:'folder',createdAt:Date.now(),_new:true,_err:'',_confirm:false};
+  renderListModal(); showModal();
+  setTimeout(()=>document.getElementById('l-name')?.focus(),40);
+}
+function closeListEditor(){ S.listDraft=null; hideModal(); }
+function readListInputs(){ const d=S.listDraft; if(!d) return; const n=document.getElementById('l-name'), ds=document.getElementById('l-desc'); if(n) d.name=n.value; if(ds) d.desc=ds.value; }
+function renderListModal(){
+  const d=S.listDraft; if(!d) return; const m=document.getElementById('modal');
+  const count=S.myItems.filter(i=>(i.listIds||[]).includes(d.id)).length;
+  m.innerHTML=`<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="ld-t" style="max-width:560px">
+    <div class="dhead"><div><span class="mono">${d._new?'Nova lista':'Editar lista'}</span><h2 id="ld-t">${d._new?'Dê um nome para a lista':'Ajuste sua lista'}</h2></div><button type="button" class="icon-btn" data-act="close" aria-label="Fechar">${ic('close',18)}</button></div>
+    <form class="form" id="list-form" novalidate style="max-width:none">
+      <div class="field"><label for="l-name">Nome da lista</label><input class="input ${d._err?'bad':''}" id="l-name" maxlength="60" placeholder="Ex.: Relógios que eu quero" value="${esc(d.name)}">${d._err?`<p class="err">${esc(d._err)}</p>`:''}</div>
+      <div class="field"><label for="l-desc">Descrição <span class="opt">(opcional)</span></label><input class="input" id="l-desc" maxlength="140" placeholder="Ex.: Modelos automáticos, pulseira de couro" value="${esc(d.desc||'')}"></div>
+      <div class="field"><span class="lab">Ícone</span><div class="pickrow">${LIST_ICONS.map(k=>`<button type="button" class="pick iconpick" data-act="licon" data-v="${k}" aria-pressed="${d.icon===k}" aria-label="Ícone ${k}">${ic(k,18)}</button>`).join('')}</div></div>
+      <div class="actions" style="justify-content:space-between">
+        ${d._new?'<span></span>':`<button type="button" class="btn ghost danger-txt ${d._confirm?'confirm':''}" data-act="dellist">${d._confirm?`Confirmar: excluir lista`:'Excluir lista'}</button>`}
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn ghost" data-act="close">Cancelar</button><button type="submit" class="btn primary">${d._new?'Criar lista':'Salvar'}</button></div>
+      </div>
+      ${!d._new&&d._confirm?`<p class="hint">Os ${count} ${count===1?'desejo':'desejos'} desta lista não são apagados: eles continuam em “Minha lista”.</p>`:''}
+    </form></div>`;
+}
+async function submitList(){
+  readListInputs(); const d=S.listDraft; const name=d.name.trim();
+  if(!name){ d._err='Dê um nome para a lista.'; renderListModal(); document.getElementById('l-name')?.focus(); return; }
+  const {_new,_err,_confirm,...l}=d; l.name=name; l.desc=(l.desc||'').trim();
+  if(_new && !S.myLists.some(x=>x.id===l.id)) S.myLists=[...S.myLists,l];
+  closeListEditor();
+  if(_new){ S.view='lista'; S.f.list=l.id; S.f.status='ativos'; S.f.cat='all'; S.f.range='all'; setHash('lista'); }
+  render(); wrap(API.saveList(l), _new?`Lista “${l.name}” criada`:'Lista atualizada');
+}
+async function deleteList(id){
+  const L=S.myLists.find(l=>l.id===id); closeListEditor();
+  S.myLists=S.myLists.filter(l=>l.id!==id); if(S.f.list===id) S.f.list='all'; render();
+  const affected=S.myItems.filter(i=>(i.listIds||[]).includes(id));
+  for(const it of affected){ try{ await API.patchItem(it.id,{listIds:(it.listIds||[]).filter(x=>x!==id)}); }catch(e){ console.error(e); } }
+  wrap(API.deleteList(id), `Lista “${L?L.name:''}” excluída`);
 }
 
 function renderFriends(){
@@ -982,6 +1223,8 @@ function renderFriendList(fid){
     <div class="head"><div style="display:flex;align-items:center;gap:16px;min-width:0">${avatar(fid,'lg')}<div style="min-width:0"><h1>${esc(personInfo(fid).name)}</h1><p>${n?`Aniversário ${daysLabel(n.days)} · ${n.date.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})}`:'Aniversário não informado'}</p></div></div>
       ${isF?`<button class="btn ghost" data-act="unfriend" data-v="${esc(fid)}">Deixar de seguir</button>`:`<button class="btn primary" data-act="addfriend" data-v="${esc(fid)}">${ic('plus',18,2)}Adicionar como amigo</button>`}</div>
     ${statsBlock(sum,false)}
+    ${listStrip(S.friendLists[fid]||[],items,false)}
+    ${S.ff.list!=='all'&&(S.friendLists[fid]||[]).some(l=>l.id===S.ff.list)?`<div class="banner"><span class="dot"></span><div style="flex:1">Mostrando a lista <b>${esc((S.friendLists[fid]||[]).find(l=>l.id===S.ff.list).name)}</b></div><button class="linkbtn" data-act="flist" data-v="all">Ver todos</button></div>`:''}
     ${filterBlock(S.ff,items,'friend')}
     ${!loaded?`<div class="empty"><span class="spin"></span><p>Carregando a lista…</p></div>`
       : !items.filter(i=>!i.got).length?`<div class="empty"><h3>Lista vazia por enquanto</h3><p>Quando ${esc(personInfo(fid).name.split(' ')[0])} adicionar desejos, eles aparecem aqui.</p></div>`
@@ -1013,7 +1256,7 @@ function renderProfile(){
 /* ================= modal: add/edit ================= */
 let draft=null;
 const DRAFT_KEY='desejario.draft';
-function blankDraft(){ return {id:newId(),title:'',url:'',price:null,range:'',category:'',hearts:3,occasions:[],note:'',size:'',color:'',qty:1,createdAt:Date.now(),got:false}; }
+function blankDraft(){ return {id:newId(),title:'',url:'',price:null,range:'',category:'',hearts:3,occasions:[],note:'',size:'',color:'',qty:1,listIds:[],createdAt:Date.now(),got:false}; }
 function titleFromUrl(u){
   try{
     const url=new URL(/^https?:\/\//i.test(u)?u:'https://'+u);
@@ -1042,12 +1285,12 @@ function openEditor(item){
   }
   draft._errs={};
   renderModal();
-  const m=document.getElementById('modal'); m.hidden=false; m.scrollTop=0; document.body.style.overflow='hidden';
+  showModal(); document.getElementById('modal').scrollTop=0;
   setTimeout(()=>document.getElementById(draft&&draft._new&&!draft.title?'f-url':'f-title')?.focus(),40);
 }
-function persistDraft(){ if(draft&&draft._new){ const {_new,_errs,_restored,_autoTitle,...d}=draft; lsSet(DRAFT_KEY, d.title||d.url||d.note ? d : null); } }
-function closeEditor(){ persistDraft(); draft=null; const m=document.getElementById('modal'); m.hidden=true; m.innerHTML=''; document.body.style.overflow=''; }
-function draftItem(){ const {_new,_errs,_restored,_autoTitle,...it}=draft; return {...it, title:it.title.trim()||'Seu desejo aparece aqui', range:it.range||rangeFor(it.price)||''}; }
+function persistDraft(){ if(draft&&draft._new){ const {_new,_errs,_restored,_autoTitle,_newList,_pop,...d}=draft; lsSet(DRAFT_KEY, d.title||d.url||d.note ? d : null); } }
+function closeEditor(){ persistDraft(); draft=null; hideModal(); }
+function draftItem(){ const {_new,_errs,_restored,_autoTitle,_newList,_pop,...it}=draft; return {...it, title:it.title.trim()||'Seu desejo aparece aqui', range:it.range||rangeFor(it.price)||''}; }
 
 function renderPreview(){
   const box=document.getElementById('sheet-preview'); if(!box||!draft) return;
@@ -1089,12 +1332,17 @@ function renderModal(){
         <div class="field"><span class="lab">Categoria</span>
           <div class="pickrow ${E.category?'badrow':''}">${CATS.map(c=>`<button type="button" class="pick" data-act="dcat" data-v="${c.id}" aria-pressed="${draft.category===c.id}">${ic(c.id,16)}${c.label}</button>`).join('')}</div>
           ${E.category?`<p class="err">${E.category}</p>`:''}</div>
+        <div class="field"><span class="lab">Salvar também em uma lista <span class="opt">(opcional)</span></span>
+          <div class="pickrow">${S.myLists.map(l=>`<button type="button" class="pick" data-act="dlist" data-v="${esc(l.id)}" aria-pressed="${(draft.listIds||[]).includes(l.id)}">${ic(l.icon||'folder',16)}${esc(l.name)}</button>`).join('')}
+            ${draft._newList?'':`<button type="button" class="pick dashed" data-act="dnewlist">${ic('plus',16,2)}Nova lista</button>`}</div>
+          ${draft._newList?`<div class="copyrow"><input class="input" id="f-newlist" maxlength="60" placeholder="Ex.: Relógios que eu quero"><button type="button" class="btn dark" data-act="dcreatelist">Criar</button><button type="button" class="btn ghost" data-act="dcancellist">Cancelar</button></div>`:''}
+        </div>
       </section>
 
       <section class="fs">
         <h3 class="fs-h"><span>2</span>Quanto você quer</h3>
         <div class="bighearts" role="radiogroup" aria-label="Quanto você quer">
-          ${[1,2,3,4,5].map(n=>`<button type="button" role="radio" class="${n<=draft.hearts?'on':''}" data-act="dheart" data-v="${n}" aria-checked="${n===draft.hearts}" aria-label="${n} de 5: ${LEVELS[n]}">${heartSvg(34)}</button>`).join('')}
+          ${[1,2,3,4,5].map(n=>`<button type="button" role="radio" class="${n<=draft.hearts?'on':''} ${draft._pop&&n<=draft.hearts&&performance.now()-draft._pop<600?'pop':''}" style="--i:${n-1};--t:-${draft._pop?Math.min(600,Math.round(performance.now()-draft._pop)):600}ms" data-act="dheart" data-v="${n}" aria-checked="${n===draft.hearts}" aria-label="${n} de 5: ${LEVELS[n]}">${heartSvg(34)}</button>`).join('')}
           <div class="bh-label"><b>${LEVELS[draft.hearts]}</b><span class="num">${draft.hearts} de 5</span></div>
         </div>
       </section>
@@ -1170,13 +1418,13 @@ function submitDraft(again){
   draft._errs=errs;
   if(Object.keys(errs).length){ renderModal(); document.getElementById(errs.title?'f-title':'wish-form')?.focus(); return; }
   if(draft.url && !/^https?:\/\//i.test(draft.url)) draft.url='https://'+draft.url;
-  const {_new,_errs,_restored,_autoTitle,...item}=draft;
+  const {_new,_errs,_restored,_autoTitle,_newList,_pop,...item}=draft;
   item.title=item.title.trim(); item.note=(item.note||'').trim(); item.size=(item.size||'').trim(); item.color=(item.color||'').trim();
   item.range=item.range||rangeFor(item.price)||'';
   if(_new){ lsSet(DRAFT_KEY,null); S.justAdded=item.id; S.view='lista'; S.openFriend=null; if(S.f.status==='ganhos') S.f.status='ativos'; S.f.cat='all'; S.f.range='all'; setHash('lista'); setTimeout(()=>{ S.justAdded=null; },2400); }
   wrap(API.saveItem(item), _new?`“${item.title}” entrou na sua lista`:'Desejo atualizado');
   if(again){ const keepCat=item.category; draft=blankDraft(); draft.category=keepCat; draft._new=true; draft._errs={}; renderModal(); render(); setTimeout(()=>document.getElementById('f-url')?.focus(),30); }
-  else { draft=null; const m=document.getElementById('modal'); m.hidden=true; m.innerHTML=''; document.body.style.overflow=''; render(); }
+  else { draft=null; hideModal(); render(); }
 }
 
 /* ================= events ================= */
@@ -1188,6 +1436,11 @@ document.addEventListener('click', e=>{
   switch(act){
     case 'theme': { const next=currentTheme()==='dark'?'light':'dark'; applyTheme(next);
       b.setAttribute('aria-checked', String(next==='dark')); b.querySelector('.lbl').textContent = next==='dark'?'Modo noite':'Modo dia'; break; }
+    case 'home':
+      if(draft) closeEditor();
+      if(S.loggedIn){ S.view='lista'; S.openFriend=null; S.menuOpen=null; S.confirmDel=null; S.f={cat:'all',range:'all',sort:S.f.sort,status:'ativos',list:'all'}; setHash('lista'); syncWatched(); }
+      else { S.authMode='entrar'; S.authErr=''; S.authInfo=''; }
+      render(); window.scrollTo({top:0,behavior:'smooth'}); break;
     case 'google': loginGoogle(); break;
     case 'authmode': S.authMode=v; S.authErr=''; S.authInfo=''; render(); document.getElementById(v==='criar'?'a-name':'a-email')?.focus(); break;
     case 'logout': endSession(); signOut(auth).catch(()=>{}); setHash('lista'); render(); break;
@@ -1195,22 +1448,34 @@ document.addEventListener('click', e=>{
       const fallback=()=>{ if(inp){ inp.focus(); inp.select(); } toast('Selecionamos o link: copie com Ctrl+C.'); };
       if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(()=>toast('Link copiado'),fallback); else fallback(); break; }
     case 'go': S.view=v; S.openFriend=null; S.menuOpen=null; setHash(v); if(S.loggedIn) syncWatched(); render(); window.scrollTo(0,0); break;
-    case 'friend': S.view='amigos'; S.openFriend=v; S.ff={cat:'all',range:'all',sort:'hearts'}; setHash('amigos'); syncWatched(); render(); window.scrollTo(0,0); break;
+    case 'friend': S.view='amigos'; S.openFriend=v; S.ff={cat:'all',range:'all',sort:'hearts',list:'all'}; setHash('amigos'); syncWatched(); render(); window.scrollTo(0,0); break;
     case 'status': S.view='lista'; S.f.status=v; setHash('lista'); render(); break;
     case 'sidecat': S.view='lista'; S.f.cat=S.f.cat===v?'all':v; setHash('lista'); render(); break;
     case 'cat': F.cat=v; render(); break;
     case 'range': F.range=v; render(); break;
     case 'clear': F.cat='all'; F.range='all'; if(scope==='me') S.f.status='ativos'; render(); break;
-    case 'new': openEditor(null); break;
+    case 'new': { const pre=b.dataset.list || (S.view==='lista'&&S.f.list!=='all'?S.f.list:''); openEditor(null); if(draft&&draft._new&&pre&&!(draft.listIds||[]).includes(pre)){ draft.listIds=[...(draft.listIds||[]),pre]; renderModal(); } break; }
     case 'menu': S.menuOpen=S.menuOpen===id?null:id; S.confirmDel=null; render(); break;
     case 'edit': { const it=S.myItems.find(x=>x.id===id); S.menuOpen=null; render(); if(it) openEditor(it); break; }
     case 'got': { const it=S.myItems.find(x=>x.id===id); S.menuOpen=null; wrap(API.patchItem(id,{got:!it.got}), it.got?'De volta à lista':'Marcado como ganho'); render(); break; }
     case 'del': if(S.confirmDel===id){ S.confirmDel=null; S.menuOpen=null; wrap(API.deleteItem(id),'Desejo excluído'); } else { S.confirmDel=id; render(); } break;
-    case 'heart': { const it=S.myItems.find(x=>x.id===id); if(it&&it.hearts!==+v) wrap(API.patchItem(id,{hearts:+v})); break; }
+    case 'heart': { const it=S.myItems.find(x=>x.id===id); if(it&&it.hearts!==+v){ S.pop={id,n:+v,at:performance.now()}; it.hearts=+v; render(); wrap(API.patchItem(id,{hearts:+v})); } break; }
     case 'addfriend': if(!S.friends.includes(v)){ const arr=[...S.friends,v]; S.friends=arr; syncWatched(); render(); wrap(API.setFriends(arr),`${personInfo(v).name.split(' ')[0]} agora está nos seus amigos`); } break;
     case 'unfriend': { const arr=S.friends.filter(x=>x!==v); S.friends=arr; if(S.openFriend===v) S.openFriend=null; syncWatched(); render(); wrap(API.setFriends(arr),'Amigo removido'); break; }
-    case 'close': closeEditor(); break;
-    case 'dheart': readDraftInputs(); draft.hearts=+v; renderModal(); break;
+    case 'close': if(S.listDraft) closeListEditor(); else closeEditor(); break;
+    case 'openlist': S.view='lista'; S.openFriend=null; S.f.list=v; S.f.cat='all'; S.f.range='all'; if(S.f.status==='todos'&&v!=='all') S.f.status='ativos'; setHash('lista'); render(); window.scrollTo(0,0); break;
+    case 'flist': S.ff.list=S.ff.list===v?'all':v; S.ff.cat='all'; render(); break;
+    case 'newlist': openListEditor(null); break;
+    case 'editlist': { const L=S.myLists.find(l=>l.id===v); if(L) openListEditor(L); break; }
+    case 'licon': readListInputs(); S.listDraft.icon=v; renderListModal(); break;
+    case 'dellist': readListInputs(); if(S.listDraft._confirm) deleteList(S.listDraft.id); else { S.listDraft._confirm=true; renderListModal(); } break;
+    case 'dlist': readDraftInputs(); draft.listIds=(draft.listIds||[]).includes(v)?draft.listIds.filter(x=>x!==v):[...(draft.listIds||[]),v]; renderModal(); break;
+    case 'dnewlist': readDraftInputs(); draft._newList=true; renderModal(); document.getElementById('f-newlist')?.focus(); break;
+    case 'dcancellist': readDraftInputs(); draft._newList=false; renderModal(); break;
+    case 'dcreatelist': { readDraftInputs(); const nm=(document.getElementById('f-newlist')?.value||'').trim(); if(!nm){ document.getElementById('f-newlist')?.focus(); break; }
+      const l={id:'l'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:nm,desc:'',icon:'folder',createdAt:Date.now()};
+      S.myLists=[...S.myLists,l]; draft.listIds=[...(draft.listIds||[]),l.id]; draft._newList=false; renderModal(); wrap(API.saveList(l),`Lista “${nm}” criada`); break; }
+    case 'dheart': readDraftInputs(); draft.hearts=+v; draft._pop=performance.now(); renderModal(); break;
     case 'dqty': readDraftInputs(); draft.qty=Math.min(10,Math.max(1,(draft.qty||1)+(+v))); renderModal(); break;
     case 'usetitle': readDraftInputs(); draft.title=titleFromUrl(draft.url); draft._errs={...draft._errs,title:''}; renderModal(); document.getElementById('f-title')?.focus(); break;
     case 'usesug': { readDraftInputs(); const r=draft.range||rangeFor(draft.price)||''; draft.occasions=[...new Set([...draft.occasions,...suggestOccasions(draft.category,r,draft.hearts)])]; renderModal(); break; }
@@ -1230,6 +1495,7 @@ document.addEventListener('submit', e=>{
   e.preventDefault();
   if(e.target.id==='wish-form') submitDraft(false);
   if(e.target.id==='auth-form') submitAuth();
+  if(e.target.id==='list-form') submitList();
   if(e.target.id==='profile-form'){
     const nm=(document.getElementById('p-name').value||'').trim();
     if(nm.length<2){ toast('Digite seu nome.'); return; }
@@ -1248,8 +1514,9 @@ document.addEventListener('input', async e=>{
     searchT=setTimeout(()=>searchPeople(S.searchQ),280);
   }
 });
-document.addEventListener('keydown', e=>{ if(e.key==='Escape'&&draft) closeEditor(); });
-document.getElementById('modal').addEventListener('click', e=>{ if(e.target.id==='modal') closeEditor(); });
+document.addEventListener('keydown', e=>{ if(e.key!=='Escape') return; if(S.listDraft) closeListEditor(); else if(draft) closeEditor(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Enter'&&e.target.id==='f-newlist'){ e.preventDefault(); document.querySelector('[data-act="dcreatelist"]')?.click(); } });
+document.getElementById('modal').addEventListener('click', e=>{ if(e.target.id==='modal'){ if(S.listDraft) closeListEditor(); else closeEditor(); } });
 window.addEventListener('hashchange', ()=>{ const h=location.hash.slice(1); const inv=pendingInvite();
   if(inv){ if(S.loggedIn&&inv!==S.me.id){ S.view='amigos'; S.openFriend=inv; syncWatched(); render(); } else S.invitedBy=inv; return; }
   if(['lista','amigos','perfil'].includes(h)&&S.view!==h){ S.view=h; S.openFriend=null; if(S.loggedIn) syncWatched(); render(); } });
