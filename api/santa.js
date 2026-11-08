@@ -1,4 +1,4 @@
-// Desejário — Amigo secreto: sorteia, grava os códigos e envia por e-mail.
+// Embrulho — Amigo secreto: sorteia, grava os códigos e envia por e-mail.
 // POST /api/santa  { action: "draw" | "resend", groupId, index? }
 // Header: Authorization: Bearer <token do Firebase do organizador>
 // Variáveis na Vercel: GMAIL_USER, GMAIL_APP_PASSWORD (e opcional SANTA_SECRET)
@@ -75,7 +75,7 @@ async function sendCode({ to, name, code, group, origin }) {
   const html = `<!doctype html><html><body style="margin:0;background:#e7ebe5;font-family:Arial,Helvetica,sans-serif;color:#1f2630">
   <div style="max-width:520px;margin:0 auto;padding:28px 16px">
     <div style="background:#ffffff;border-radius:24px;padding:28px">
-      <p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#7f8a85">Desejário · Amigo secreto</p>
+      <p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#7f8a85">Embrulho · Amigo secreto</p>
       <h1 style="margin:0 0 14px;font-size:26px;line-height:1.2;font-weight:600">${escHtml(group.name)}</h1>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.5">Oi, ${escHtml(name)}! ${escHtml(group.ownerName || 'O organizador')} te convidou para o amigo secreto. O sorteio já foi feito: use o código abaixo para descobrir quem você tirou.</p>
       ${facts ? `<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#4e5960">${facts}</p>` : ''}
@@ -89,7 +89,7 @@ async function sendCode({ to, name, code, group, origin }) {
     </div>
   </div></body></html>`;
   const text = `Oi, ${name}! Amigo secreto "${group.name}". Seu código: ${pretty(code)}. Veja quem você tirou em: ${link}`;
-  await mailer().sendMail({ from: `"Desejário" <${process.env.GMAIL_USER}>`, to, subject: `Amigo secreto: ${group.name} — seu código chegou`, text, html });
+  await mailer().sendMail({ from: `"Embrulho" <${process.env.GMAIL_USER}>`, to, subject: `Amigo secreto: ${group.name} — seu código chegou`, text, html });
 }
 
 /* ---------- handler ---------- */
@@ -118,7 +118,7 @@ module.exports = async (req, res) => {
       const emails = people.map(p => String(p.email || '').trim().toLowerCase());
       if (emails.some(e => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) || new Set(emails).size !== emails.length) return send(400, { error: 'Confira os e-mails: todos precisam ser válidos e diferentes.' });
 
-      // who already has a Desejário list (to link their wishes)
+      // who already has a Embrulho list (to link their wishes)
       const uids = await Promise.all(emails.map(async e => { try { const d = await fs(`/emails/${encodeURIComponent(e)}`, token); return dec(d.fields.uid) || ''; } catch (x) { return ''; } }));
       const order = sattolo(people.length);
       const codes = people.map(() => newCode());
