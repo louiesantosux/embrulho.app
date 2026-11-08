@@ -51,7 +51,32 @@ function parsePrice(v) {
   const n = parseFloat(s); return isFinite(n) && n > 0 ? Math.round(n * 100) / 100 : null;
 }
 
+async function proxyImage(req, res) {
+  let u;
+  try { u = new URL(String(req.query.img || '')); await assertPublic(u); }
+  catch (e) { res.status(400).end('bad url'); return; }
+  const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    let url = u, r, hops = 0;
+    while (true) {
+      r = await fetch(url, { redirect: 'manual', signal: ctrl.signal, headers: { 'User-Agent': UA, 'Accept': 'image/avif,image/webp,image/*,*/*;q=0.8', 'Referer': url.origin + '/' } });
+      const loc = r.headers.get('location');
+      if (r.status >= 300 && r.status < 400 && loc && hops < 5) { url = new URL(loc, url); await assertPublic(url); hops++; continue; }
+      break;
+    }
+    const type = (r.headers.get('content-type') || '').split(';')[0].trim();
+    if (!r.ok || !type.startsWith('image/') || type.includes('svg')) { res.status(415).end('not an image'); return; }
+    const buf = Buffer.from(await r.arrayBuffer());
+    if (buf.length > 8 * 1024 * 1024) { res.status(413).end('too big'); return; }
+    res.setHeader('Content-Type', type);
+    res.setHeader('Cache-Control', 'public, s-maxage=604800, max-age=86400');
+    res.status(200).end(buf);
+  } catch (e) { res.status(502).end('fetch failed'); }
+  finally { clearTimeout(timer); }
+}
+
 module.exports = async (req, res) => {
+  if (req.query.img) return proxyImage(req, res);
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   let target;
   try { target = new URL(String(req.query.url || '')); await assertPublic(target); }
@@ -92,6 +117,3 @@ module.exports = async (req, res) => {
     res.status(200).end(JSON.stringify({ images: imgs.slice(0, 8), title, price, site: M['og:site_name'] || url.hostname.replace(/^www\./, '') }));
   } catch (e) {
     res.status(200).end(JSON.stringify({ images: [], error: 'Não foi possível ler essa página.' }));
-  } finally { clearTimeout(timer); }
-};
-
