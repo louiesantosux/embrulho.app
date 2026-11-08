@@ -313,7 +313,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .tb-nav button:hover{color:var(--ink)}
 .tb-nav button[aria-current="page"]{background:var(--raised);color:var(--ink);box-shadow:inset 0 1px 0 var(--glass-hi),0 6px 16px -8px var(--glass-shadow)}
 .tb-spacer{flex:1}
-.tb-av{display:flex}
+.tb-av{display:flex;border-radius:50%;padding:2px;transition:transform .55s var(--spring,ease),box-shadow .3s}
+.tb-av:hover{box-shadow:0 0 0 2px var(--glow)}
+.tb-av:active{transform:scale(.9);transition-duration:.14s}
+.tb-av[aria-current="page"]{box-shadow:0 0 0 2px var(--lime)}
+.me{width:100%;padding:8px;border-radius:18px;color:inherit;transition:background-color .25s,transform .55s var(--spring,ease)}
+.me:hover{background:var(--panel)}
+.me:active{transform:scale(.97);transition-duration:.14s}
+.me[aria-current="page"]{background:var(--raised);box-shadow:inset 0 1px 0 var(--glass-hi),0 6px 18px -10px var(--glass-shadow)}
 
 /* day / night switch */
 .mode{position:relative;display:flex;align-items:center;height:34px;width:118px;border-radius:999px;padding:0;flex:none;
@@ -876,7 +883,7 @@ function renderTopbar(inApp){
       <span class="lbl">${night?'Modo noite':'Modo dia'}</span>
       <span class="knob">${SUN}${MOON}</span>
     </button>
-    ${inApp?`<span class="tb-av" title="${esc(S.me.name||'Você')}">${avatar(S.me.id,'sm')}</span>`:''}
+    ${inApp?`<button type="button" class="tb-av" data-act="go" data-v="perfil" title="Meu perfil" aria-label="Meu perfil" ${S.view==='perfil'?'aria-current="page"':''}>${avatar(S.me.id,'sm')}</button>`:''}
   </div></header>`;
 }
 
@@ -994,7 +1001,7 @@ function renderShell(){
 
     <aside class="side" aria-label="Painel">
       <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="me">${avatar(S.me.id)}<div style="min-width:0"><b>${esc(S.me.name||'Você')}</b><span>Minha conta</span></div></div>
+      <button type="button" class="me" data-act="go" data-v="perfil" aria-label="Meu perfil" ${S.view==='perfil'?'aria-current="page"':''}>${avatar(S.me.id)}<div style="min-width:0;text-align:left"><b>${esc(S.me.name||'Você')}</b><span>Meu perfil</span></div></button>
       <div><h4>Minha lista</h4><div class="nav">
         ${sideStatus('ativos','Desejos','list',sum.count)}
         ${sideStatus('sonhos','Sonhos (5 corações)','star',sum.dreams)}
