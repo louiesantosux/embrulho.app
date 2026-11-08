@@ -131,6 +131,11 @@ module.exports = async (req, res) => {
           giftTo: { name: people[t].name || '', uid: uids[t] || '' }, createdAt: now }).mapValue.fields },
           currentDocument: { exists: false } };
       });
+      // in-app notification for participants who already have an account (not the organizer)
+      people.forEach((p, i) => {
+        const u = uids[i]; if (!u || u === group.owner) return;
+        writes.push({ update: { name: docName(`notifications/${u}/items/s_${groupId}`), fields: enc({ type: 'santa', from: group.owner, groupName: group.name || 'Amigo secreto', date: group.date || '', createdAt: Date.now(), read: false }).mapValue.fields } });
+      });
       await fs(`${BASE}:commit`.replace('/documents:commit', '/documents:commit'), token, { method: 'POST', body: JSON.stringify({ writes }) });
 
       const results = await Promise.all(people.map((p, i) => sendCode({ to: emails[i], name: p.name || 'tudo bem', code: codes[i], group, origin }).then(() => true).catch(err => { console.error('mail', err && err.message); return false; })));
