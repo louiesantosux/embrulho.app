@@ -1,4 +1,4 @@
-// Desejário — lê a página de um produto (imagem, nome, preço) e serve imagens redimensionadas.
+// Embrulho — lê a página de um produto (imagem, nome, preço) e serve imagens redimensionadas.
 //   /api/preview?url=<link da loja>        -> JSON { images, title, price, site }
 //   /api/preview?img=<link da imagem>&w=600 -> imagem redimensionada (WebP) para a largura pedida
 const dns = require('dns').promises;
